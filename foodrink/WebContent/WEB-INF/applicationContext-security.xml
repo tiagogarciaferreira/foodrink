@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<b:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:b="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+ http://www.springframework.org/schema/security 
+ http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+
+
+	<!-- HABILITA SEGURANÇA DO LADO DO SERVIDOR EX: CLASSES E METODOS MAS PRECISA 
+		IMPLEMENTAR -->
+	<global-method-security	secured-annotations="enabled" />
+
+
+	<!-- SE O ACESSO FOR NEGADO REDIRECIONA PARA A PAGINA INDEX -->
+	<http auto-config="true" use-expressions="true" authentication-manager-ref="PRIMARY"> 
+	<csrf disabled="true"/>
+		<!-- DEFININDO A MANEIRA DE ACESSO AS PAGINAS CONTROLADAS PELO SPRING SECURITY 
+			(INICIO) -->
+	    <intercept-url pattern="/estabelecimento/**" access="isAuthenticated() and hasAnyRole({'ROLE_EMPRESA','ROLE_CLIENTE','ROLE_GARCOM','ROLE_COZINHA'})" />
+		<intercept-url pattern="/resources/**" access="isAnonymous() or isAuthenticated() or !isAuthenticated()" />
+		<intercept-url pattern="/publico/**" access="isAnonymous() or isAuthenticated() or !isAuthenticated()" />
+		<intercept-url pattern="/confirmacao/**" access="isAnonymous() or isAuthenticated() or !isAuthenticated()" />
+		<!-- DEFININDO A MANEIRA DE ACESSO AS PAGINAS CONTROLADAS PELO SPRING SECURITY 
+			(FINAL) -->
+
+		<!-- DIZENDO PRO SPRING SECURITY QUAL É A NOSSA PAGINA DE LOGIN  -->
+		<form-login login-processing-url="/publico/login" login-page="/publico/login.jsp?acesso=negado"
+			always-use-default-target="true" default-target-url="/estabelecimento/estabelecimento.jsp"
+			authentication-failure-url="/publico/login.jsp?acesso=negado"
+		    username-parameter="username" password-parameter="password" />
+
+		<!-- LOGOUT DO SPRING -->
+		<logout invalidate-session="true" logout-success-url="/publico/login.jsp?logout=sucesso"  logout-url="/logout" delete-cookies="JSESSIONID" />
+		
+		<!-- CASO O USUARIO TENTE LOGAR EM UMA SEGUNDA VEZ SEM TER SAIDO DA PRIMEIRA SESSAO-->
+		<!-- <session-management
+			invalid-session-url="/publico/login.jsp" session-fixation-protection="migrateSession">
+			<concurrency-control max-sessions="1" expired-url="/publico/login.jsp" error-if-maximum-exceeded="true" />
+		</session-management> -->
+
+	</http>
+
+	<authentication-manager id="PRIMARY" alias="PRIMARY">
+		<authentication-provider>
+			<password-encoder hash="md5" />
+			<jdbc-user-service data-source-ref="springDataSource"
+				users-by-username-query="select email as username, senha as password, 'true' as enabled from usuario where status = true and lower(email) = lower(?);"
+				authorities-by-username-query="select u.email as username, p.nome as authority from usuario u join tipo_acesso_permissao tap on u.tipo_acesso_id = tap.tipo_acesso_id join permissao p on p.id_permissao = tap.permissao_id where u.status = true and lower(u.email) = lower(?);" />
+		</authentication-provider>
+	</authentication-manager>
+
+</b:beans>

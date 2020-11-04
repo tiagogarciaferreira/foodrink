@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+	http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-4.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-4.2.xsd"
+	default-lazy-init="true">
+
+	<!-- REALIZA A DETECÇÃO E LEITURA DAS ANOTAÇÕES SPRING COMO CONTROLLER INJEÇAO-->
+	<context:annotation-config/>
+	
+	<!-- REALIZA A DETECÇÃO E LEITURA DAS ANOTAÇÕES SPRING UTILIZADAS NO SPRING MVC-->
+	<mvc:annotation-driven/>
+	
+	<!-- MAPEAMENTO DE SERVLETS DO SPRING-->
+	<mvc:default-servlet-handler />
+	
+	<!-- CACHE DOS ARQUIVOS DA PASTA RESOURCES PARA NÃO SOLICITAR TODA HORA E SIM GUARDAR NA CACHE-->
+<!-- <mvc:resources location="/resources/img" mapping="/resources/**" cache-period="5000"/>  -->	
+	
+	<!-- PACOTES A SEREM LIDOS EM BUSCA DE NOTAÇÕES DO SPRING -->
+	
+	<context:component-scan	base-package="arquivo" />
+	<context:component-scan	base-package="constante" />
+	<context:component-scan	base-package="contexto" />
+	<context:component-scan	base-package="controller" />
+	<context:component-scan	base-package="email" />
+	<context:component-scan	base-package="filter" />
+	<context:component-scan	base-package="interfac" />
+	<context:component-scan	base-package="logica" />
+	<context:component-scan	base-package="model" />
+	<context:component-scan	base-package="repository" />
+	<context:component-scan	base-package="seguranca" />
+	<context:component-scan	base-package="services" />
+	<context:component-scan	base-package="session" />
+	<context:component-scan	base-package="util" />
+
+
+	<!-- DATA SOURCE -->
+	 <bean id="springDataSource" name="springDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="false">
+		<property name="jndiName">
+			<value>java:comp/env/jdbc/datasource</value> 
+		</property>
+	</bean>
+	 
+	<!-- MAPEAMENTO DO SPRING DATA SOURCE (FINAL) -->
+	
+	<!-- MAPEANDO A PAGINA INCIAL PARA O SPRING SABER OBRIGATORIO-->
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" lazy-init="false">
+		<property name="mappings">
+			<props>
+				<prop key="/index.jsp">indexController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- MAPEANDO QUAIS PASTA ESTÃO COM AS PAGINAS E QUAIS SUAS EXTENÇÕES -->
+	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver" lazy-init="false">
+	 	<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/"/>  
+     	<property name="suffix" value=".jsp"/> 
+	</bean>
+	
+	
+	<!-- MAPEAMENTO OBRIGATORIO DO SPRING -->
+	<bean name="indexController" class="org.springframework.web.servlet.mvc.ParameterizableViewController" lazy-init="false"/>
+	
+ <!-- MAPEAMENTO DAS CLASSES -->
+
+</beans>
+

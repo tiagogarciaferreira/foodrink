@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context reloadable="true">
+
+<!-- https://tomcat.apache.org/tomcat-9.0-doc/config/context.html -->
+<!-- https://tomcat.apache.org/tomcat-9.0-doc/jdbc-pool.html -->
+
+<Resource name="jdbc/datasource"
+		  auth="Container"
+		  type="javax.sql.DataSource"
+		  dafaultAutoCommit="false"
+		  maxActive="50"
+		  maxIdle="10"
+		  maxWait="10"
+		  initialSize="10"
+		  driverClassName="org.postgresql.Driver"
+		  validationQuery="SELECT 'OK'"
+		  testWhileIdle="true"
+		  testOnBorrow="true"
+		  numTestsPerEvictionRun="5"
+		  timeBetweenEvictionRunsMillis="5000"
+		  minEvictableIdleTimeMillis="60000"
+		  antiJARLocking="false"
+		  antiResourceLocking="false"
+		  username="tgfcode1_postgresjava19734650"
+          password="tgfcode1_postgresjava19734650"
+		  url="jdbc:postgresql://localhost:5432/tgfcode1_db_site_foodrink"
+		  
+/>
+</Context>
